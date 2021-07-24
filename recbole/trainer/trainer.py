@@ -251,7 +251,7 @@ class Trainer(AbstractTrainer):
             train_loss_output += set_color('train loss', 'blue') + ': ' + des % losses
         return train_loss_output + ']'
 
-    def fit(self, train_data, valid_data=None, verbose=True, saved=True, show_progress=False, callback_fn=None):
+    def fit(self, train_data, valid_data=None, verbose=True, saved=True, show_progress=False, callback_fn=None, writer=None):
         r"""Train the model based on the train data and the valid data.
 
         Args:
@@ -274,6 +274,9 @@ class Trainer(AbstractTrainer):
             # train
             training_start_time = time()
             train_loss = self._train_epoch(train_data, epoch_idx, show_progress=show_progress)
+            if writer is not None:
+                writer.add_scalar('training loss', train_loss, epoch_idx)
+
             self.train_loss_dict[epoch_idx] = sum(train_loss) if isinstance(train_loss, tuple) else train_loss
             training_end_time = time()
             train_loss_output = \

@@ -9,13 +9,16 @@ recbole.quick_start
 import logging
 from logging import getLogger
 
+from tensorboardX import SummaryWriter
+
 from recbole.config import Config
 from recbole.data import create_dataset, data_preparation
+from recbole.data.dataset import GitHubDataset
 from recbole.utils import init_logger, get_model, get_trainer, init_seed
 from recbole.utils.utils import set_color
 
 
-def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=None, saved=True):
+def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=None, saved=True, debug=False):
     r""" A fast running api, which includes the complete process of
     training and testing a model on a specified dataset
 
@@ -28,7 +31,15 @@ def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=Non
     """
     # configurations initialization
     config = Config(model=model, dataset=dataset, config_file_list=config_file_list, config_dict=config_dict)
+
+
+
+
     init_seed(config['seed'], config['reproducibility'])
+
+    # config["benchmark_filename"] = ['train', 'val', 'test']
+
+    root = '../data/github'
 
     # logger initialization
     init_logger(config)
@@ -36,9 +47,13 @@ def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=Non
 
     logger.info(config)
 
-    # dataset filtering
+    # dataset = GitHubDataset(config, root, debug=debug, overwrite=False)
     dataset = create_dataset(config)
     logger.info(dataset)
+
+    logger.info("Initializing SummaryWriter for tensorboard ... ")
+    writer = SummaryWriter()
+
 
     # dataset splitting
     train_data, valid_data, test_data = data_preparation(config, dataset)
@@ -52,7 +67,7 @@ def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=Non
 
     # model training
     best_valid_score, best_valid_result = trainer.fit(
-        train_data, valid_data, saved=saved, show_progress=config['show_progress']
+        train_data, valid_data, saved=saved, show_progress=config['show_progress'], writer=writer
     )
 
     # model evaluation
