@@ -31,9 +31,6 @@ def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=Non
     # configurations initialization
     config = Config(model=model, dataset=dataset, config_file_list=config_file_list, config_dict=config_dict)
 
-
-
-
     init_seed(config['seed'], config['reproducibility'])
 
     # config["benchmark_filename"] = ['train', 'val', 'test']
@@ -43,7 +40,6 @@ def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=Non
     # logger initialization
     init_logger(config)
     logger = getLogger()
-
     logger.info(config)
 
     # dataset = GitHubDataset(config, root, debug=debug, overwrite=False)
@@ -52,7 +48,6 @@ def run_recbole(model=None, dataset=None, config_file_list=None, config_dict=Non
 
     logger.info("Initializing SummaryWriter for tensorboard ... ")
     writer = SummaryWriter()
-
 
     # dataset splitting
     train_data, valid_data, test_data = data_preparation(config, dataset)

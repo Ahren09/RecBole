@@ -13,8 +13,6 @@ if __name__ == '__main__':
     args, _ = parser.parse_known_args()
 
     config_file_list = args.config_files.strip().split(' ') if args.config_files else None
-    model_name = "LightGCN"# args.model
-    model_name = "BPR"# args.model
-    model_name = "NGCF"# argsN.model
 
-    run_recbole(model=model_name, dataset=args.dataset, config_file_list=config_file_list, debug=args.debug)
+    # model_name can be "LightGCN", "BPR", "NGCF" ...
+    run_recbole(model=args.model, dataset=args.dataset, config_file_list=config_file_list, debug=args.debug)
